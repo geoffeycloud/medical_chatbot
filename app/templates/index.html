@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Medical Chatbot - AI Health Assistant</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Emergency Banner (hidden by default) -->
+    <div id="emergencyBanner" class="alert alert-danger alert-dismissible fade" role="alert" style="display: none; margin: 0; border-radius: 0;">
+        <div class="container">
+            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> MEDICAL EMERGENCY DETECTED</h4>
+            <p id="emergencyMessage">If you are experiencing a medical emergency, please call 911 immediately or go to your nearest emergency room.</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="container-fluid h-100">
+        <!-- Mobile sidebar toggle button -->
+        <button class="mobile-toggle d-md-none" id="mobileToggle" style="display: none;">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="row h-100 g-0">
+            <!-- Enhanced Sidebar -->
+            <div class="col-xl-4 col-lg-4 col-md-5 d-none d-md-block sidebar">
+                <div class="sidebar-header">
+                    <h3><i class="fas fa-stethoscope"></i> Medical AI</h3>
+                    <p class="text-muted">Health Analysis & Triage</p>
+                    <div class="feature-badges">
+                        <span class="badge bg-success"><i class="fas fa-shield-alt"></i> Safety</span>
+                        <span class="badge bg-info"><i class="fas fa-brain"></i> AI</span>
+                        <span class="badge bg-warning"><i class="fas fa-triage"></i> Smart Triage</span>
+                    </div>
+                </div>
+                
+                <!-- Performance Metrics -->
+                <div class="performance-metrics">
+                    <h6><i class="fas fa-tachometer-alt"></i> Performance</h6>
+                    <div class="metric">
+                        <span class="metric-label">Response Time:</span>
+                        <span id="responseTime" class="metric-value">--</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Risk Level:</span>
+                        <span id="riskLevel" class="metric-value badge">--</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Urgency:</span>
+                        <span id="urgencyLevel" class="metric-value badge">--</span>
+                    </div>
+                </div>
+                
+                <!-- Health Tips -->
+                <div class="health-tips">
+                    <h6><i class="fas fa-lightbulb"></i> Daily Health Tips</h6>
+                    <div id="healthTipsList">
+                        <div class="tip-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            Stay hydrated - drink at least 8 glasses of water daily
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            Exercise regularly - aim for 30 minutes daily
+                        </div>
+                        <div class="tip-item">
+                            <i class="fas fa-check-circle text-success"></i>
+                            Get 7-9 hours of quality sleep each night
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Emergency Contacts -->
+                <div class="emergency-contacts">
+                    <h6><i class="fas fa-phone-alt text-danger"></i> Emergency Contacts</h6>
+                    <div class="contact-item">
+                        <strong>Medical Emergency:</strong> 911
+                    </div>
+                    <div class="contact-item">
+                        <strong>Suicide Prevention:</strong> 988
+                    </div>
+                    <div class="contact-item">
+                        <strong>Poison Control:</strong> 1-800-222-1222
+                    </div>
+                </div>
+                
+                <!-- Safety Disclaimer -->
+                <div class="disclaimer">
+                    <h6><i class="fas fa-exclamation-triangle text-warning"></i> Important Notice</h6>
+                    <p class="small text-muted">
+                        This AI provides health information with safety analysis and triage assessment.
+                        It includes emergency detection and explainable reasoning.
+                        <strong>Always consult healthcare professionals for medical advice.</strong>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Enhanced Chat Area -->
+            <div class="col-xl-8 col-lg-8 col-md-7 col-12 chat-container">
+                <div class="chat-header">
+                    <h4><i class="fas fa-comments"></i> Advanced Medical AI Chat</h4>
+                    <div class="header-actions">
+                        <button class="btn btn-outline-info btn-sm" id="showFeatures">
+                            <i class="fas fa-info-circle"></i> Features
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" id="clearChat">
+                            <i class="fas fa-trash"></i> Clear Chat
+                        </button>
+                    </div>
+                </div>
+                
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> {{ error }}
+                    </div>
+                {% endif %}
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <div class="message-header">
+                                <strong>Advanced Medical AI Assistant</strong>
+                                <span class="confidence-badge badge bg-success">Ready</span>
+                            </div>
+                            <div class="message-text">
+                                Hello! I'm your advanced medical AI assistant with enhanced safety features:
+                                <ul class="mt-2">
+                                    <li><strong>🚨 Emergency Detection:</strong> Immediate alerts for urgent symptoms</li>
+                                    <li><strong>🎯 Smart Triage:</strong> Urgency assessment with recommendations</li>
+                                    <li><strong>🧠 Explainable AI:</strong> Clear reasoning for all suggestions</li>
+                                    <li><strong>📊 Symptom Analysis:</strong> Condition matching with confidence scores</li>
+                                    <li><strong>⚡ Performance Tracking:</strong> Response time monitoring</li>
+                                </ul>
+                                <div class="alert alert-info mt-3 mb-0">
+                                    <strong>How to get the best results:</strong> Describe your symptoms clearly and mention when they started, their severity, and any relevant details.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="message-time">
+                            <span class="time">Now</span>
+                            <span class="response-time">System Ready</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="input-group">
+                        <input type="text" 
+                               class="form-control" 
+                               id="messageInput" 
+                               placeholder="Describe your symptoms or ask a health question..."
+                               maxlength="1000">
+                        <button class="btn btn-primary" type="button" id="sendButton">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                    <div class="input-helper">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt"></i> Your message will be analyzed for safety and urgency
+                            | <span id="charCount">0</span>/1000 characters
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Modal -->
+    <div class="modal fade" id="featuresModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-star"></i> Advanced Features</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-shield-alt text-danger"></i> Safety & Emergency Detection</h6>
+                            <ul class="feature-list">
+                                <li>Real-time emergency keyword detection</li>
+                                <li>Automatic emergency hotline recommendations</li>
+                                <li>Mental health crisis intervention</li>
+                                <li>Poison control referrals</li>
+                            </ul>
+                            
+                            <h6 class="mt-4"><i class="fas fa-triage text-warning"></i> Smart Triage System</h6>
+                            <ul class="feature-list">
+                                <li>Three-tier urgency assessment</li>
+                                <li>Risk level categorization</li>
+                                <li>Personalized action recommendations</li>
+                                <li>Confidence scoring</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-brain text-info"></i> Explainable AI</h6>
+                            <ul class="feature-list">
+                                <li>Clear reasoning for all suggestions</li>
+                                <li>Step-by-step thought process</li>
+                                <li>Medical evidence explanations</li>
+                                <li>Uncertainty acknowledgment</li>
+                            </ul>
+                            
+                            <h6 class="mt-4"><i class="fas fa-search text-success"></i> Symptom Analysis</h6>
+                            <ul class="feature-list">
+                                <li>Pattern recognition algorithms</li>
+                                <li>Condition matching with confidence</li>
+                                <li>Multiple possibility assessment</li>
+                                <li>Symptom clustering analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 mb-0">Analyzing symptoms & assessing safety...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+</body>
+</html>
